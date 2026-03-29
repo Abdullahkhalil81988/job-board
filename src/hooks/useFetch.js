@@ -10,7 +10,7 @@ const useFetch = (url) => {
       try {
         setLoading(true);
         const res = await fetch(url);
-        if (!res.ok) throw new Error("Failed to fetch jobs");
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
         const json = await res.json();
         setData(json);
       } catch (err) {

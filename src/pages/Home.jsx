@@ -1,23 +1,21 @@
 import { useState, useEffect } from "react";
 import useFetch from "../hooks/useFetch";
 
-const API_KEY = import.meta.env.VITE_MUSE_API_KEY;
-
 const Home = () => {
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState([]);
 
   const { data, loading, error } = useFetch(
-    `https://www.themuse.com/api/public/jobs?category=Engineering&level=Entry%20Level&level=Mid%20Level&page=1&api_key=${API_KEY}`
+    "https://remotive.com/api/remote-jobs?category=software-dev&limit=20"
   );
 
   useEffect(() => {
-    if (data?.results) {
+    if (data?.jobs) {
       setFiltered(
-        data.results.filter(
+        data.jobs.filter(
           (job) =>
-            job.name.toLowerCase().includes(search.toLowerCase()) ||
-            job.company.name.toLowerCase().includes(search.toLowerCase())
+            job.title.toLowerCase().includes(search.toLowerCase()) ||
+            job.company_name.toLowerCase().includes(search.toLowerCase())
         )
       );
     }
@@ -30,7 +28,7 @@ const Home = () => {
           Find Your Dream Job
         </h1>
         <p className="text-gray-500 text-lg">
-          Browse the latest engineering roles worldwide
+          Browse the latest remote tech roles worldwide
         </p>
       </div>
 
@@ -73,41 +71,41 @@ const Home = () => {
               <div className="flex justify-between items-start mb-3">
                 <div>
                   <h2 className="text-xl font-bold text-gray-800">
-                    {job.name}
+                    {job.title}
                   </h2>
                   <p className="text-indigo-600 font-medium">
-                    {job.company.name}
+                    {job.company_name}
                   </p>
                 </div>
                 <span className="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full">
-                  {job.type}
+                  {job.job_type}
                 </span>
               </div>
 
-              <div className="flex flex-wrap gap-2 text-sm text-gray-500 mb-4">
-                {job.locations?.map((loc) => (
-                  <span key={loc.name}>📍 {loc.name}</span>
-                ))}
+              <div className="flex gap-4 text-sm text-gray-500 mb-4">
+                <span>
+                  {job.candidate_required_location || "Worldwide"}
+                </span>
               </div>
 
               <div className="flex flex-wrap gap-2 mb-4">
-                {job.levels?.map((level) => (
+                {job.tags?.slice(0, 3).map((tag) => (
                   <span
-                    key={level.name}
+                    key={tag}
                     className="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full"
                   >
-                    {level.name}
+                    {tag}
                   </span>
                 ))}
               </div>
 
               <a
-                href={job.refs.landing_page}
+                href={job.url}
                 target="_blank"
                 rel="noreferrer"
                 className="block text-center bg-indigo-600 text-white py-2 rounded-xl hover:bg-indigo-700 transition font-medium"
               >
-                View Job →
+                View Job
               </a>
             </div>
           ))}
